@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KAZIMU V1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #0b0b1a; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        .app-container {
+            max-width: 420px;
+            width: 100%;
+            background: #12122a;
+            border-radius: 32px;
+            padding: 20px 16px 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            position: relative;
+            border: 1px solid #2a2a5a;
+            margin: 10px;
+        }
+
+        /* Background video (full container) */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .dev-credit {
+            position: fixed;
+            bottom: 12px;
+            right: 16px;
+            font-size: 11px;
+            color: #6b6b9e;
+            background: #1a1a3a;
+            padding: 6px 14px;
+            border-radius: 40px;
+            border: 1px solid #3a3a6a;
+            z-index: 999;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+        }
+        .dev-credit i { color: #b388ff; margin-right: 4px; }
+
+        /* Login */
+        #loginPage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 85vh;
+            animation: fadeUp 0.8s ease;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(40px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .app-logo {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #b388ff, #7c4dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(123, 77, 255, 0.3);
+            margin-bottom: 4px;
+        }
+        .app-sub { font-size: 14px; color: #8888bb; margin-bottom: 40px; letter-spacing: 3px; }
+        
+        .login-box {
+            width: 100%;
+            background: #1e1e42;
+            padding: 28px 20px;
+            border-radius: 28px;
+            border: 1px solid #3a3a6a;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 14px 18px;
+            margin: 8px 0 12px;
+            border-radius: 60px;
+            border: none;
+            background: #0f0f2a;
+            color: #fff;
+            font-size: 15px;
+            outline: 1px solid #3a3a6a;
+            transition: 0.2s;
+        }
+        .login-box input:focus { outline: 2px solid #b388ff; background: #16163a; }
+        .login-box label { font-size: 13px; color: #aaaadd; margin-left: 8px; font-weight: 600; }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 60px;
+            background: linear-gradient(135deg, #b388ff, #7c4dff);
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            margin-top: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 20px rgba(123, 77, 255, 0.3);
+        }
+        .btn-primary:active { transform: scale(0.96); }
+
+        /* Main */
+        #mainPage {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .welcome-badge {
+            font-size: 22px;
+            font-weight: 700;
+            background: #1e1e42;
+            padding: 14px 20px;
+            border-radius: 40px;
+            border-left: 6px solid #b388ff;
+        }
+        .welcome-badge span { color: #b388ff; }
+
+        /* Video 4:3 */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 75%;
+            background: #000;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 2px solid #2a2a5a;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .menu-row {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+        }
+        .menu-btn {
+            flex: 1;
+            padding: 14px 6px;
+            border: 2px solid #3a3a6a;
+            border-radius: 60px;
+            background: transparent;
+            color: #ddd;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .menu-btn.active {
+            background: #7c4dff;
+            border-color: #b388ff;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(123, 77, 255, 0.3);
+        }
+        .menu-btn i { margin-right: 6px; }
+
+        .attack-panel {
+            background: #1a1a3e;
+            padding: 20px 16px;
+            border-radius: 28px;
+            border: 1px solid #2f2f5a;
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .attack-panel.show { display: flex; }
+
+        .attack-panel input {
+            padding: 14px 18px;
+            border-radius: 60px;
+            border: none;
+            background: #0f0f2a;
+            color: #fff;
+            outline: 1px solid #3a3a6a;
+        }
+        .attack-panel input:focus { outline: 2px solid #b388ff; }
+
+        .mode-slider {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 6px 0;
+            scroll-behavior: smooth;
+            white-space: nowrap;
+        }
+        .mode-slider .mode-item {
+            background: #28285a;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ccc;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.15s;
+            flex-shrink: 0;
+        }
+        .mode-slider .mode-item.selected {
+            border-color: #b388ff;
+            background: #3a2a7a;
+            color: #fff;
+        }
+        .mode-slider .mode-item.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            border-color: #555;
+        }
+        .note-small { font-size: 11px; color: #8888bb; margin-top: -8px; padding-left: 8px; }
+
+        .btn-attack {
+            background: #ff3d5c;
+            padding: 16px;
+            border: none;
+            border-radius: 60px;
+            color: #fff;
+            font-weight: 800;
+            font-size: 18px;
+            box-shadow: 0 4px 20px rgba(255, 61, 92, 0.3);
+            cursor: pointer;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .loading-overlay.show { display: flex; }
+        .loading-bar {
+            width: 80%;
+            max-width: 300px;
+            height: 12px;
+            background: #2a2a5a;
+            border-radius: 60px;
+            overflow: hidden;
+        }
+        .loading-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #b388ff, #7c4dff);
+            transition: width 0.1s;
+            border-radius: 60px;
+        }
+        .loading-text {
+            font-size: 24px;
+            font-weight: 900;
+            color: #b388ff;
+        }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background: #18183a;
+            padding: 12px 8px;
+            border-radius: 60px;
+            margin-top: 12px;
+            border: 1px solid #2f2f5a;
+        }
+        .bottom-nav .nav-item {
+            color: #8888bb;
+            font-size: 20px;
+            padding: 8px 16px;
+            border-radius: 40px;
+            transition: 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .bottom-nav .nav-item.active {
+            background: #7c4dff;
+            color: #fff;
+        }
+        .bottom-nav .nav-item i { font-size: 18px; }
+
+        /* Hamburger - hanya untuk owner */
+        .hamburger-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #b388ff;
+            cursor: pointer;
+            z-index: 20;
+            display: none; /* default hidden, muncul kalo owner login */
+        }
+        .hamburger-menu.show { display: block; }
+
+        .owner-panel {
+            display: none;
+            background: #1a1a3e;
+            padding: 20px;
+            border-radius: 24px;
+            border: 1px solid #7c4dff;
+            margin-top: 10px;
+        }
+        .owner-panel.show { display: block; }
+
+        .tools-area {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+            background: #1a1a3e;
+            padding: 18px;
+            border-radius: 24px;
+        }
+        .tools-area.show { display: flex; }
+
+        .toast-msg {
+            background: #2a2a5a;
+            padding: 10px 18px;
+            border-radius: 40px;
+            text-align: center;
+            font-size: 13px;
+            border-left: 4px solid #b388ff;
+        }
+        .hidden-owner-info {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background video (full screen) -->
+<video class="bg-video" autoplay loop muted playsinline>
+    <source src="https://www.youtube.com/embed/nAe82r8C9_4?autoplay=1&mute=1" type="video/mp4">
+</video>
+<!-- Karena YouTube ga bisa jadi background video langsung, kita pake iframe tersembunyi -->
+<iframe style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;" src="https://www.youtube.com/embed/nAe82r8C9_4?autoplay=1&mute=1" allow="autoplay"></iframe>
+
+<div class="app-container" id="appContainer">
+    <div class="dev-credit"><i class="fas fa-code"></i> YanzHere</div>
+
+    <!-- Hamburger (hidden by default) -->
+    <div class="hamburger-menu" id="hamburgerMenu" onclick="toggleOwnerPanel()">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Owner Panel -->
+    <div class="owner-panel" id="ownerPanel">
+        <h4 style="color:#b388ff;"><i class="fas fa-crown"></i> Panel Owner</h4>
+        <div style="background:#0f0f2a; padding:12px; border-radius:20px; margin-top:8px; max-height:150px; overflow-y:auto; font-size:13px; color:#ccc;">
+            <p><i class="fas fa-comment"></i> Kritik/saran dari pengguna:</p>
+            <div id="ownerMessages" style="margin-top:6px; color:#aaa;">Belum ada pesan.</div>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-text" id="loadingText">0%</div>
+        <div class="loading-bar">
+            <div class="fill" id="loadingFill"></div>
+        </div>
+        <div style="color:#888; font-size:14px;">⚡ Memproses attack...</div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginPage">
+        <div class="app-logo">KAZIMU V1</div>
+        <div class="app-sub">⚡ NEXT GEN BUG</div>
+        <div class="login-box">
+            <label><i class="fas fa-user"></i> Username</label>
+            <input type="text" id="loginUser" placeholder="Masukan username">
+            <label><i class="fas fa-lock"></i> Password</label>
+            <input type="password" id="loginPass" placeholder="Masukan password">
+            <button class="btn-primary" onclick="handleLogin()"><i class="fas fa-rocket"></i> Start Bug</button>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div id="mainPage">
+        <div class="welcome-badge" id="welcomeText">Welcome, <span>User</span> <i class="fas fa-hand-peace" style="color:#b388ff;"></i></div>
+
+        <!-- Video 4:3 (link kedua) -->
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/CY5WLrSYPzo?autoplay=1&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+
+        <div class="menu-row">
+            <div class="menu-btn active" id="btnBugNumber" onclick="switchMenu('number')"><i class="fas fa-phone-alt"></i> Bug Nomer</div>
+            <div class="menu-btn" id="btnBugGroup" onclick="switchMenu('group')"><i class="fas fa-users"></i> Bug Group</div>
+        </div>
+
+        <!-- Panel Bug Nomer -->
+        <div class="attack-panel show" id="panelNumber">
+            <input type="text" id="targetNumber" placeholder="Masukan nomor target (contoh: 628xxx)">
+            <div>
+                <div style="display:flex; justify-content:space-between; color:#aaa; font-size:13px; margin-bottom:4px;">
+                    <span>Attack Mode <i class="fas fa-chevron-right"></i></span>
+                    <span style="color:#666;">geser pilih</span>
+                </div>
+                <div class="mode-slider" id="modeSliderNumber">
+                    <div class="mode-item selected" data-mode="delay" onclick="selectMode(this)">bug delay <span class="note-small" style="display:inline;">(delay)</span></div>
+                    <div class="mode-item disabled" data-mode="blank" onclick="selectMode(this)">bug blank <span class="note-small">(tahap pengembangan)</span></div>
+                    <div class="mode-item" data-mode="fcrash" onclick="selectMode(this)">bug FCRASH <span class="note-small">(crash)</span></div>
+                    <div class="mode-item disabled" data-mode="invisible" onclick="selectMode(this)">bug invisible <span class="note-small">(tahap pengembangan)</span></div>
+                    <div class="mode-item" data-mode="andro" onclick="selectMode(this)">bug andro <span class="note-small">(patah2)</span></div>
+                </div>
+            </div>
+            <button class="btn-attack" onclick="startAttack('number')"><i class="fas fa-bolt"></i> Start Attack</button>
+        </div>
+
+        <!-- Panel Bug Group -->
+        <div class="attack-panel" id="panelGroup">
+            <input type="text" id="targetGroupLink" placeholder="Masukan link group (contoh: https://chat.whatsapp.com/xxx)">
+            <div>
+                <div style="display:flex; justify-content:space-between; color:#aaa; font-size:13px; margin-bottom:4px;">
+                    <span>Attack Mode <i class="fas fa-chevron-right"></i></span>
+                    <span style="color:#666;">geser pilih</span>
+                </div>
+                <div class="mode-slider" id="modeSliderGroup">
+                    <div class="mode-item selected" data-mode="banned" onclick="selectMode(this)">banned group <span class="note-small">(Membanned)</span></div>
+                    <div class="mode-item disabled" data-mode="buggroup" onclick="selectMode(this)">bug group <span class="note-small">(tahap pengembangan)</span></div>
+                </div>
+            </div>
+            <button class="btn-attack" onclick="startAttack('group')"><i class="fas fa-bolt"></i> Start Attack</button>
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="bottom-nav">
+            <div class="nav-item active" id="navHome" onclick="switchNav('home')"><i class="fas fa-home"></i> Home</div>
+            <div class="nav-item" id="navTools" onclick="switchNav('tools')"><i class="fas fa-tools"></i> Tools</div>
+            <div class="nav-item" id="navSender" onclick="switchNav('sender')"><i class="fas fa-paper-plane"></i> Sender</div>
+        </div>
+
+        <!-- Tools -->
+        <div class="tools-area" id="toolsArea">
+            <h4 style="color:#b388ff;"><i class="fas fa-pen"></i> Kirim Kritik/Saran ke Owner</h4>
+            <textarea id="criticInput" rows="2" placeholder="Tulis pesan..." style="background:#0f0f2a; border:1px solid #3a3a6a; border-radius:20px; padding:14px; color:#fff; resize:none;"></textarea>
+            <button class="btn-primary" style="font-size:14px; padding:12px;" onclick="sendCritic()"><i class="fas fa-paper-plane"></i> Kirim</button>
+        </div>
+
+        <!-- Sender -->
+        <div class="tools-area" id="senderArea">
+            <h4 style="color:#b388ff;"><i class="fas fa-address-card"></i> Add Sender</h4>
+            <input type="text" id="senderPhone" placeholder="Masukan nomor WA pengguna" value="628123456789">
+            <button class="btn-primary" style="font-size:14px; padding:12px;" onclick="addSender()"><i class="fas fa-check"></i> Tautkan Perangkat</button>
+            <div id="senderStatus" class="toast-msg" style="margin-top:8px;">Kode tautkan: <span id="pairCode">DH9-KJH</span></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== GLOBAL ==========
+    let currentUser = '';
+    let currentMenu = 'number';
+    let selectedMode = { number: 'delay', group: 'banned' };
+    let ownerMessages = [];
+    let isOwner = false;
+
+    // ========== LOGIN ==========
+    function handleLogin() {
+        const u = document.getElementById('loginUser').value.trim();
+        const p = document.getElementById('loginPass').value.trim();
+        if (!u || !p) { alert('Isi username & password dulu bos!'); return; }
+
+        // Cek owner (sembunyiin credential)
+        if (u === 'YanzHere' && p === '565656') {
+            isOwner = true;
+            document.getElementById('hamburgerMenu').classList.add('show');
+        } else {
+            isOwner = false;
+            document.getElementById('hamburgerMenu').classList.remove('show');
+        }
+
+        currentUser = u;
+        document.getElementById('welcomeText').innerHTML = `Welcome, <span>${u}</span> <i class="fas fa-hand-peace" style="color:#b388ff;"></i>`;
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('mainPage').style.display = 'flex';
+    }
+
+    // ========== SWITCH MENU ==========
+    function switchMenu(type) {
+        currentMenu = type;
+        document.getElementById('panelNumber').classList.toggle('show', type === 'number');
+        document.getElementById('panelGroup').classList.toggle('show', type === 'group');
+        document.getElementById('btnBugNumber').classList.toggle('active', type === 'number');
+        document.getElementById('btnBugGroup').classList.toggle('active', type === 'group');
+    }
+
+    // ========== SELECT MODE ==========
+    function selectMode(el) {
+        if (el.classList.contains('disabled')) {
+            alert('⛔ Tahap pengembangan, gabisa dipilih bro!');
+            return;
+        }
+        const parent = el.closest('.mode-slider');
+        parent.querySelectorAll('.mode-item').forEach(item => item.classList.remove('selected'));
+        el.classList.add('selected');
+        const panel = parent.closest('.attack-panel');
+        const type = panel.id === 'panelNumber' ? 'number' : 'group';
+        selectedMode[type] = el.dataset.mode;
+    }
+
+    // ========== LOADING ANIMATION ==========
+    function showLoading(callback) {
+        const overlay = document.getElementById('loadingOverlay');
+        const fill = document.getElementById('loadingFill');
